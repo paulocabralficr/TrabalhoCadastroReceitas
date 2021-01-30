@@ -6,11 +6,58 @@
   align-items: center;
 }
 
-input, button {
-  width: 200px;
+table {
+  font-family: Arial, Tahoma, sans-serif;
+  font-size: 14px;
+  width: 50%;
+}
+
+tbody tr:nth-child(2n+2) td {
+   background: #f0f0f0;
+}
+
+th {
+  padding: 5px 10px;
+  background: #f1f1f1;
+  color: #333;
+  text-align: left;
+}
+
+td {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+table button {
+  display: flex;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.far {
+  margin-right: 5px;
+}
+
+input, textarea {
+  width: 50%;
   height: 30px;
   font-size: 20px;
   margin: 5px;
+}
+
+textarea {
+  height: 100px;
+}
+
+label {
+  font-weight: bold;
 }
 
 .food {

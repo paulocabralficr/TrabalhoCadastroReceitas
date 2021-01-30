@@ -11,28 +11,36 @@ function App() {
   const [foodList, setFoodList] = useState([]);
 
   useEffect(() => {
+    getFoodList()
+  }, []);
+
+  const getFoodList = () => {
     Axios.get('http://localhost:3001/read').then((response) => {
       setFoodList(response.data);
     });
-  }, []);
+  }
 
-  const addToList = () => {
-    Axios.post("http://localhost:3001/insert", {
+  const addToList = async () => {
+    await Axios.post("http://localhost:3001/insert", {
       foodName: foodName,
       ingrediente: ingrediente,
       modPreparo: modPreparo,
       rendimento: rendimento,
     });
+    getFoodList();
   };
 
-  const updateFood = (id) => {
-    Axios.put("http://localhost:3001/update", {
+  const updateFood = async (id) => {
+    await Axios.put("http://localhost:3001/update", {
       id: id, 
       newFoodName: newFoodName,
     });
+    getFoodList();
   };
 
-  const deleteFood = (id) => {
+  const deleteFood = (id, index) => {
+    foodList.splice(index,1)
+    setFoodList([...foodList])
     Axios.delete(`http://localhost:3001/delete/${id}`)
   };
 
@@ -48,15 +56,13 @@ function App() {
       }}
     />
     <label>Ingredientes:</label>
-    <input 
-      type="text"
+    <textarea 
       onChange={(event) => {
         setIngrediente(event.target.value);
       }}
     />
     <label>Modo de Preparo:</label>
-    <input 
-    type="text"
+    <textarea 
     onChange={(event) => {
       setModPreparo(event.target.value);
     }}
@@ -72,22 +78,43 @@ function App() {
     
     <h1>Lista de Receitas</h1>
 
-    {foodList.map((val, key) => {
-      return (
-      <div key={key}>
-        <h2> {val.foodName} </h2> <h4> {val.ingrediente} </h4> <h4> {val.modPreparo} </h4> <h3> {val.rendimento} </h3>
-        <input 
-          type="text" 
-          placeholder="Renomear..." 
-          onChange={(event) => {
-            setNewFoodName(event.target.value);
-          }} 
-        />
-        <button onClick={() => updateFood(val._id)}> Editar </button>
-        <button onClick={() => deleteFood(val._id)}> Delete </button>
-      </div>
-      );
-    })};
+    
+      <table>
+        <thead>
+          <tr>
+            <th width="30%" colSpan="2">Nome</th>
+            <th>Ingredientes</th>
+            <th>Modo de Preparo</th>
+            <th>Rendimento</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+        {foodList.map((val, index) => (
+          <tr key={val._id}>
+            <td>{val.foodName}</td>
+            <td>
+              <input 
+                type="text" 
+                placeholder="Renomear..."
+                onChange={(event) => {
+                  setNewFoodName(event.target.value);
+                }} 
+              />
+            </td>
+            <td>{val.ingrediente}</td>
+            <td>{val.modPreparo}</td>
+            <td>{val.rendimento}</td>
+            <td>
+              <div class="flex">
+                <button type="button" onClick={() => updateFood(val._id)} ><i class="far fa-edit"></i> Editar </button>
+                <button type="button" onClick={() => deleteFood(val._id, index)} ><i class="far fa-trash-alt"></i> Excluir </button>
+              </div>
+            </td>
+          </tr>
+        ))}
+        </tbody>
+      </table>
   </div>
   );
 };
